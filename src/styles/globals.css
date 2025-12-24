@@ -1,0 +1,239 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== 字体系统 ===== */
+:root {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Light Mode 颜色变量 ===== */
+:root {
+  /* 品牌色 */
+  --primary: #007AFF;
+  --secondary: #5E5CE6;
+  --accent: #FF9F0A;
+  
+  /* 功能色 */
+  --success: #34C759;
+  --warning: #FF9F0A;
+  --danger: #FF453A;
+  --info: #007AFF;
+  
+  /* 背景色 */
+  --bg-app: #FAFAFA;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-elevated: rgba(255, 255, 255, 0.95);
+  --bg-overlay: rgba(0, 0, 0, 0.1);
+  
+  /* 文本色 */
+  --text-primary: #000000;
+  --text-secondary: #3C3C43;
+  --text-tertiary: #8E8E93;
+  --text-link: #007AFF;
+  --text-inverse: #FFFFFF;
+  
+  /* 边框 */
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.15);
+  
+  /* 状态色 */
+  --state-hover: rgba(0, 0, 0, 0.02);
+  --state-active: rgba(0, 0, 0, 0.05);
+  
+  /* 系统状态 */
+  --status-excellent: #34C759;
+  --status-good: #30D158;
+  --status-fair: #FFD60A;
+  --status-poor: #FF9F0A;
+  --status-critical: #FF453A;
+  
+  /* 玻璃效果 */
+  --glass-blur: 20px;
+  --glass-opacity: 0.85;
+}
+
+/* ===== Dark Mode 颜色变量 ===== */
+.dark, [data-theme="dark"] {
+  /* 品牌色 */
+  --primary: #0A84FF;
+  --secondary: #6366F1;
+  --accent: #FF9F0A;
+  
+  /* 功能色 */
+  --success: #30D158;
+  --warning: #FF9F0A;
+  --danger: #FF453A;
+  --info: #0A84FF;
+  
+  /* 背景色 */
+  --bg-app: #1A1A1A;
+  --bg-card: rgba(20, 20, 20, 0.95);
+  --bg-elevated: rgba(30, 30, 30, 0.98);
+  --bg-overlay: rgba(0, 0, 0, 0.4);
+  
+  /* 文本色 */
+  --text-primary: #FFFFFF;
+  --text-secondary: #E5E5EA;
+  --text-tertiary: #636366;
+  --text-link: #0A84FF;
+  --text-inverse: #000000;
+  
+  /* 边框 */
+  --border-light: rgba(255, 255, 255, 0.1);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  
+  /* 状态色 */
+  --state-hover: rgba(255, 255, 255, 0.05);
+  --state-active: rgba(255, 255, 255, 0.1);
+  
+  /* 系统状态 */
+  --status-excellent: #30D158;
+  --status-good: #32D74B;
+  --status-fair: #FFD60A;
+  --status-poor: #FF9F0A;
+  --status-critical: #FF453A;
+}
+
+/* ===== 基础样式 ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ===== 隐藏滚动条 ===== */
+.hidden-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== 玻璃卡片基础样式 ===== */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: all 0.2s ease-out;
+}
+
+.glass-card.hoverable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.12);
+}
+
+.dark .glass-card.hoverable:hover {
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== 按钮基础样式 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: var(--text-inverse);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--state-hover);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: var(--text-inverse);
+}
+
+/* ===== 动画 ===== */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ===== 过渡动画 ===== */
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ===== 响应式工具 ===== */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
