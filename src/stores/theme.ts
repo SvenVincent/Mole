@@ -1,7 +1,25 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { invoke } from '@tauri-apps/api/core'
 
 type ThemeMode = 'auto' | 'light' | 'dark'
+
+// 主题颜色配置
+const THEME_COLORS = {
+  light: { r: 245, g: 245, b: 245, a: 0.95 },
+  dark: { r: 20, g: 20, b: 20, a: 0.95 },
+}
+
+// 同步窗口背景色到 Rust
+const syncWindowBgColor = async (theme: 'light' | 'dark') => {
+  try {
+    const color = THEME_COLORS[theme]
+    await invoke('set_window_bg_color', color)
+    console.log('[Theme] Window background synced:', theme)
+  } catch (e) {
+    console.warn('[Theme] Failed to sync window background:', e)
+  }
+}
 
 interface ThemeState {
   mode: ThemeMode
@@ -22,6 +40,11 @@ const getSystemTheme = (): 'light' | 'dark' => {
   return 'light'
 }
 
+// 根据模式计算实际主题
+const resolveTheme = (mode: ThemeMode): 'light' | 'dark' => {
+  return mode === 'auto' ? getSystemTheme() : mode
+}
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
@@ -31,8 +54,10 @@ export const useThemeStore = create<ThemeState>()(
       resolvedTheme: getSystemTheme(),
       
       setMode: (mode) => {
-        const resolvedTheme = mode === 'auto' ? getSystemTheme() : mode
+        const resolvedTheme = resolveTheme(mode)
         set({ mode, resolvedTheme })
+        // 同步到原生窗口背景
+        syncWindowBgColor(resolvedTheme)
       },
       
       setGlassIntensity: (intensity) => set({ glassIntensity: intensity }),
@@ -46,6 +71,18 @@ export const useThemeStore = create<ThemeState>()(
         glassIntensity: state.glassIntensity,
         animationSpeed: state.animationSpeed,
       }),
+      // 从 localStorage 恢复状态后的回调
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          // 根据恢复的 mode 重新计算 resolvedTheme
+          const resolvedTheme = resolveTheme(state.mode)
+          // 更新 resolvedTheme
+          useThemeStore.setState({ resolvedTheme })
+          // 同步到原生窗口
+          console.log('[Theme] Rehydrated, syncing:', state.mode, '->', resolvedTheme)
+          syncWindowBgColor(resolvedTheme)
+        }
+      },
     }
   )
 )
